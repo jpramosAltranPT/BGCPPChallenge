@@ -1,0 +1,14 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:bit="http://example.org/types" targetNamespace="http://example.org/types" >
+  <xsd:complexType name="XType">
+       <xsd:sequence>
+         <xsd:element name="intMember" type="xsd:int" />  
+         <xsd:element name="stringMember" type="xsd:string" />         
+         <xsd:element name="intMember2" type="xsd:int" /> 
+         <xsd:element name="intMember3" type="xsd:int" /> 
+         <xsd:element name="intMember4" type="xsd:int" /> 
+         <xsd:element name="intMember6" type="xsd:int" /> 		 
+       </xsd:sequence>
+  </xsd:complexType>  
+  <xsd:element name="a" type="bit:XType"/>
+
+</xsd:schema>

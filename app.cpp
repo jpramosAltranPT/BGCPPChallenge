@@ -47,7 +47,7 @@ string random_string(size_t length)
 void writing_map(string variable_name, string variable_type) {
 
 	fstream outfile;
-	outfile.open("teste.xml", fstream::app);
+	outfile.open("generated_XML.xml", fstream::app);
 	char a = 34; // make the "
 	string compare1("int");
 	string compare3 = compare1 + a;
@@ -76,7 +76,7 @@ void make_Complex_Xml(bool start, string name) {
 
 
 	fstream outfile;
-	outfile.open("teste.xml", fstream::app);
+	outfile.open("generated_XML.xml", fstream::app);
 
 	if (start)
 	{
@@ -200,7 +200,7 @@ void found_Complex(string name_Complex, bool begin)
 	}
 void create_xml()
 {
-	ofstream outfile("teste.xml");
+	ofstream outfile("generated_XML.xml");
 	char a = 34;
 	outfile << "<?xml version= "<< a <<"1.0" << a << " encoding= "<< a << "UTF-8" << a << "?>" << endl;
 	Num_Tabs++;
@@ -268,7 +268,7 @@ void ficheiro_method() {
 void create_JSON()
 {
 	
-	ofstream outJSON("Final.JSON");
+	ofstream outJSON("Exported_JSON.JSON");
 	outJSON << "{" ;
 	Num_Tabs_JSON++;
 	outJSON.close();
@@ -279,7 +279,7 @@ void create_JSON()
 void end_JSON()
 {
 	fstream outJSON;
-	outJSON.open("Final.JSON", fstream::app);
+	outJSON.open("Exported_JSON.JSON", fstream::app);
 	outJSON << "\n" << "}";
 	outJSON.close();
 
@@ -288,7 +288,7 @@ void end_JSON()
 
 void writing_JSON(string name, string value ,bool isValid, bool exception) {
 	fstream outJSON;
-	outJSON.open("Final.JSON", fstream::app);
+	outJSON.open("Exported_JSON.JSON", fstream::app);
 	char a = 34;
 	if (isValid) {
 		outJSON << "," << "\n";
@@ -320,7 +320,7 @@ void writing_JSON(string name, string value ,bool isValid, bool exception) {
 
 void reading_XML() {
 
-	ifstream f1("teste.xml");
+	ifstream f1("generated_XML.xml");
 
 	string s, value_string;
 	string search_beginning("<");
