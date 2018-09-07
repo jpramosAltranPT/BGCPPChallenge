@@ -475,7 +475,7 @@ int main(int argc, char*argv[]) {
 			case '1':
 				create_xml();
 				ficheiro_method();
-			    XMLPlatformUtils::Initialize();
+				XMLPlatformUtils::Initialize();
 				ValidateSchema2(PATH,"generated_XML.xml");
 				XMLPlatformUtils::Terminate();
 				break;
