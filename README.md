@@ -6,9 +6,9 @@ docker cp app.cpp <container>:/app.cpp
 docker cp template.xsd <container>:/template.xsd
   
 #Inside docker just need to compile
-g++ app.cpp -o app
+g++ app.cpp -o app -lxerces-c
 #And then just run with the path of the xsd, Use this in case the template is in the root of the Docker like the app
-./app "template.xsd"
+./app template.xsd
 
 #The generated XML has the name generated_XML.xml
 #The generated JSON has the name Final.JSON
