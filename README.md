@@ -22,7 +22,7 @@ apt-get update
 
 apt-get install libxerces-c3-dev
   
-#Then compile
+# Then compile
 g++ app.cpp -o app -lxerces-c
 
 #If compiling a error regarding not finding the path to xerces ("cannot find -lxerces") , just restart the docker, doing ctrl+p and then ctrl+q, and then execute again docker exec -it <container> /bin/bash
@@ -31,7 +31,7 @@ g++ app.cpp -o app -lxerces-c
 ./app template.xsd
 
 #The generated XML has the name generated_XML.xml
-#The generated JSON has the name Final.JSON
+#The generated JSON has the name Exported_JSON.JSON
 
 #Is possible to use another .xsd with this code, but they need to have the same types as the first ones, I put anothers for example
 #Just change the name when called 
