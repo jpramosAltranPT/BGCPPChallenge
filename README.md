@@ -1,6 +1,10 @@
 # BGCPPChallenge
 #I tryed to make the parsers by my own, and tryed to make the XML and JSON according to the knowledge i found
 
+#First install xerces using this command in docker
+
+apt-get install libxerces-c3-dev
+
 #When doing the copy also do the copy of the xsd
 docker cp app.cpp <container>:/app.cpp
 docker cp template.xsd <container>:/template.xsd
