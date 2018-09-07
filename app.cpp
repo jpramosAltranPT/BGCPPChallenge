@@ -4,27 +4,28 @@
 #include <string>
 #include <cstring>
 #include <map>
+
 #include <algorithm> 
 #include <cstdlib> 
 
-char* PATH;
+#include <vector>
 
+char* PATH;
 
 using namespace std;
 
 
 void found_Complex(string name_Complex, bool begin);
 
-////////////////LAST STUFFF
 int Num_Tabs = 0;
 int Num_Tabs_JSON = 0;
 
 // ENTER FUNCTION
 
-void removeCharsFromString( string str,const char* charsToRemove ) {
-   for ( unsigned int i = 0; i < strlen(charsToRemove); ++i ) {
-      str.erase( remove(str.begin(), str.end(), charsToRemove[i]), str.end() );
-   }
+void removeCharsFromString(string str, const char* charsToRemove) {
+	for (unsigned int i = 0; i < strlen(charsToRemove); ++i) {
+		str.erase(remove(str.begin(), str.end(), charsToRemove[i]), str.end());
+	}
 }
 
 /////////////// XSD to XML
@@ -71,7 +72,7 @@ void writing_map(string variable_name, string variable_type) {
 	outfile.close();
 }
 
-void make_Complex_Xml(bool start, string name) {
+void make_Complex_Xml(bool start, string name, string name_type, string scheme) {
 
 
 
@@ -80,25 +81,64 @@ void make_Complex_Xml(bool start, string name) {
 
 	if (start)
 	{
-
 		for (int j = 0; j < Num_Tabs; j++)
 			outfile << "	";
-		outfile << "<" << name << ">" << endl;
+		outfile << "<" << name_type << ":" << name << " " << scheme << ">" << endl;
 		Num_Tabs++;
-
 	}
 	else if (!start)
 	{
 		for (int j = 0; j < Num_Tabs; j++)
 			outfile << "	";
-		outfile << "</" << name << ">" << endl;
+		outfile << "</" << name_type << ":" << name << ">" << endl;
 
 	}
 	outfile.close();
-
 }
 
-void getting_sequece(string variable_name_complex) {
+string getting_scheme(string scheme)
+{
+	fstream f1("template.xsd");
+	size_t begin_of_sequece, end_of_sequece, found, found2=0, found3, aux2;
+
+	f1.seekp(ios_base::beg);
+
+	vector<string> words;
+
+	string search(" ");
+	string aux("<xsd:schema");
+	string schema;
+
+	if (f1.is_open())
+	{
+		string s("");
+
+		while (!f1.eof() || s.length() != 0) {
+			found = s.find(aux);
+			if (found != string::npos) // scheme
+			{
+				do{
+					
+					aux2 = found2;
+					found2 = s.find(search,found2+1);
+					words.push_back(s.substr(aux2, found2 - aux2));
+				} while (found2 != string::npos);
+
+			}	
+			getline(f1, s);
+		}
+	}
+	for (unsigned i = 0; i < words.size(); ++i)
+	{
+		found3 = words[i].find(scheme);
+		cout << "  140   " << scheme;
+		cout << words[i] << endl;
+		if (found3 != string::npos)
+			return(words[i]);
+	}
+}
+
+void getting_sequece(string variable_name_complex, string name_type) {
 
 	string aux("<xsd:element");
 	string aux2("<xsd:sequence>");
@@ -127,13 +167,13 @@ void getting_sequece(string variable_name_complex) {
 						if (found2 != string::npos)
 						{
 							found3 = s.find(" type");
-							string variable_name = s.substr(found2+19, found3 - found2-20);
+							string variable_name = s.substr(found2 + 19, found3 - found2 - 20);
 							found2 = s.find(aux4);
 							if (found2 != string::npos)
 							{
 								found3 = s.find("/>");
 								if (found3 != string::npos) {
-									string variable_type = s.substr(found2 + 10, found3 - found2-12);
+									string variable_type = s.substr(found2 + 10, found3 - found2 - 12);
 									writing_map(variable_name, variable_type);
 								}
 
@@ -147,62 +187,67 @@ void getting_sequece(string variable_name_complex) {
 			getline(f1, s);
 		}
 		Num_Tabs--;
-		make_Complex_Xml(false, variable_name_complex);
+		make_Complex_Xml(false, variable_name_complex, name_type, "");
 	}
 
 }
 
-void found_Complex(string name_Complex, bool begin) 
+void found_Complex(string name_Complex, bool begin)
 {
 	string s;
 	ifstream f1 (PATH);
 	string aux("<xsd:element");
 	string aux2("name=");
 	string aux3("type=");
+	string scheme("");
 	getline(f1, s);
-	size_t  found, found2, found3;
+	size_t  found, found2, found3, found4;
 
 	if (f1.is_open())
 	{
-			while (!f1.eof() || s.length() != 0)
+		while (!f1.eof() || s.length() != 0)
+		{
+			found = s.find(aux);
+			if (found != string::npos)
 			{
-				found = s.find(aux);
-				if (found != string::npos)
+				found2 = s.find(aux2);
+				if (found2 != string::npos)
 				{
-					found2 = s.find(aux2);
-
+					char a = '"';
+					found3 = s.find(" type");
+					string variable_name_complex = s.substr(found2 + 6, found3 - found2 - 7);
+					found2 = s.find(aux3);
 					if (found2 != string::npos)
 					{
-						found3 = s.find(" type");
-						string variable_name_complex = s.substr(found2 + 6, found3 - found2 - 7);
-						found2 = s.find(aux3);
-						if (found2 != string::npos)
-						{
-							found3 = s.find(">");
-							if (found3 != string::npos) {
-								string c_name = s.substr(found2 + 10, found3 - found2 - 12);
-								if (c_name == name_Complex) {
-									make_Complex_Xml(begin, variable_name_complex);
-									if (begin)
-										getting_sequece(variable_name_complex);
-								}
+						found3 = s.find(">");
+						if (found3 != string::npos) {
+							string c_name = s.substr(found2 + 10, found3 - found2 - 12);
+							if (c_name == name_Complex) {
+								found4 = s.find(name_Complex);
+								string Aux_Stuff = s.substr(found2 + 6, found4 - found2 - 7);
+								if (Aux_Stuff != "")
+									scheme = getting_scheme(Aux_Stuff);
+								make_Complex_Xml(begin, variable_name_complex, Aux_Stuff, scheme);
+								if (begin)
+									getting_sequece(variable_name_complex, Aux_Stuff);
 							}
-
-
 						}
+
+
 					}
 				}
-				getline(f1, s);
 			}
+			getline(f1, s);
 		}
-		
-
 	}
+
+
+}
 void create_xml()
 {
 	ofstream outfile("generated_XML.xml");
 	char a = 34;
-	outfile << "<?xml version= "<< a <<"1.0" << a << " encoding= "<< a << "UTF-8" << a << "?>" << endl;
+	outfile << "<?xml version= " << a << "1.0" << a << " encoding= " << a << "UTF-8" << a << "?>" << endl;
 	Num_Tabs++;
 	outfile.close();
 }
@@ -211,7 +256,7 @@ void create_xml()
 void ficheiro_method() {
 
 
-	string s,name_complex;
+	string s, name_complex;
 	string aux("<xsd:element");
 	string aux2("name=");
 	string aux3("type=");
@@ -219,7 +264,7 @@ void ficheiro_method() {
 	string found_ComplexType("<xsd:complexType");
 
 	ifstream f1(PATH);
-	size_t complex, complex_end_num , found_complex, found3;
+	size_t complex, complex_end_num, found_complex, found, found2, found3;
 
 	if (f1.is_open())
 	{
@@ -239,8 +284,7 @@ void ficheiro_method() {
 					found3 = s.find(">");
 					if (found3 != string::npos) {
 						name_complex = s.substr(found_complex + 6, found3 - found_complex - 7);
-						found_Complex(name_complex,true);
-
+						found_Complex(name_complex, true);
 					}
 
 				}
@@ -267,9 +311,9 @@ void ficheiro_method() {
 
 void create_JSON()
 {
-	
+
 	ofstream outJSON("Exported_JSON.JSON");
-	outJSON << "{" ;
+	outJSON << "{";
 	Num_Tabs_JSON++;
 	outJSON.close();
 
@@ -286,7 +330,7 @@ void end_JSON()
 
 }
 
-void writing_JSON(string name, string value ,bool isValid, bool exception) {
+void writing_JSON(string name, string value, bool isValid, bool exception) {
 	fstream outJSON;
 	outJSON.open("Exported_JSON.JSON", fstream::app);
 	char a = 34;
@@ -311,7 +355,7 @@ void writing_JSON(string name, string value ,bool isValid, bool exception) {
 		for (int j = 0; j < Num_Tabs_JSON; j++)
 			outJSON << "	";
 		outJSON << "}";
-	
+
 	}
 	outJSON.close();
 
@@ -326,7 +370,7 @@ void reading_XML() {
 	string search_beginning("<");
 	string search_end(">");
 	string search_end_name("</");
-	
+
 	size_t name_number_b;
 	size_t name_number_e, name_ending, difference;
 
@@ -334,35 +378,36 @@ void reading_XML() {
 	{
 		getline(f1, s);
 		getline(f1, s);
-		//Parser
 		while (!f1.eof() || s.length() != 0)
 		{
 			name_number_b = s.find(search_beginning);
 			name_number_e = s.find(search_end_name);
 			difference = name_number_e - name_number_b;
-			if (name_number_b != string::npos && difference>1)
+			if (name_number_b != string::npos && difference > 1)
 			{
 				name_number_e = s.find(search_end);
 				if (name_number_e != string::npos)
 				{
-					string variable_name = s.substr(name_number_b + 1, name_number_e - name_number_b-1);					name_ending = s.find(search_end_name); // now i know if its an element
+					string variable_name = s.substr(name_number_b + 1, name_number_e - name_number_b - 1);
+					name_ending = s.find(search_end_name); 
 					if (name_ending != string::npos)
 					{
 						value_string = s.substr(name_number_e + 1, name_ending - name_number_e - 1);
-						writing_JSON(variable_name, value_string ,true, false);
+						writing_JSON(variable_name, value_string, true, false);
 
 					}
 					else
 					{
 						value_string = "";
-						writing_JSON(variable_name, value_string, false,false);
+						writing_JSON(variable_name, value_string, false, false);
 					}
-					
+
 				}
-				
+
 			}
 			else
 			{
+
 				if (name_ending != string::npos)
 				{
 					string variable_name = "";
@@ -379,13 +424,14 @@ void reading_XML() {
 int main(int argc, char*argv[]) {
 
 	bool in = true;
-	char option = 0;
-
+ 	char option = 0;
+ 
 	if (argc > 1)
-		PATH = argv[1];
 
-	removeCharsFromString( PATH, "\"" );
+	PATH = argv[1];
+	
 
+	removeCharsFromString(PATH, "\"");
 	do {
 		cout << "Menu" << endl;
 		cout << "1-XML generation" << endl;
@@ -397,24 +443,24 @@ int main(int argc, char*argv[]) {
 		{
 			cout << "Invalid option, please repeat" << endl;
 		}
-		switch (option) 
+		switch (option)
 		{
 			case '1':
 				create_xml();
 				ficheiro_method();
-				cout << "Generation Complete" << endl;
 				break;
 			case '2':
 				create_JSON();
 				reading_XML();
-				cout << "Export Complete" << endl;
 				break;
 			case '3':
-				in = false;
-				break;
-			};
+			break;
+			default:	
+			break;
+		};
 
-	} while (in);
+		} while (option != '1' && option != '2' && option != '3');
 
+	
 	return (0);
 }
