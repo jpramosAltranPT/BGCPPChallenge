@@ -4,13 +4,18 @@
 #include <string>
 #include <cstring>
 #include <map>
-
 #include <algorithm> 
 #include <cstdlib> 
-
 #include <vector>
-
-char* PATH;
+#include <stdio.h>
+#include <xercesc/util/XMLString.hpp>
+#include <xercesc/parsers/XercesDOMParser.hpp>
+#include <xercesc/framework/LocalFileInputSource.hpp>
+#include <xercesc/sax/ErrorHandler.hpp>
+#include <xercesc/sax/SAXParseException.hpp>
+#include <xercesc/validators/common/Grammar.hpp>
+ 
+ char* PATH;
 
 using namespace std;
 
@@ -19,8 +24,32 @@ void found_Complex(string name_Complex, bool begin);
 
 int Num_Tabs = 0;
 int Num_Tabs_JSON = 0;
+ 
+XERCES_CPP_NAMESPACE_USE
+ 
 
-// ENTER FUNCTION
+void ValidateSchema2(const char* schemaFilePath, const char* xmlFilePath)
+{
+    XercesDOMParser domParser;
+
+    if (domParser.loadGrammar(schemaFilePath, Grammar::SchemaGrammarType) == NULL)
+    {
+        cout << "Could not load\n";
+        return;
+    }
+ 
+
+    domParser.setValidationScheme(XercesDOMParser::Val_Auto);
+    domParser.setDoNamespaces(true);
+    domParser.setDoSchema(true);
+    domParser.setValidationConstraintFatal(true);
+    domParser.parse(xmlFilePath);
+    if (domParser.getErrorCount() == 0)
+        cout << "XML file validated against the schema successfully\n";
+    else
+        cout <<"XML file doesn't conform to the schema\n";
+}
+ 
 
 void removeCharsFromString(string str, const char* charsToRemove) {
 	for (unsigned int i = 0; i < strlen(charsToRemove); ++i) {
@@ -131,8 +160,6 @@ string getting_scheme(string scheme)
 	for (unsigned i = 0; i < words.size(); ++i)
 	{
 		found3 = words[i].find(scheme);
-		cout << "  140   " << scheme;
-		cout << words[i] << endl;
 		if (found3 != string::npos)
 			return(words[i]);
 	}
@@ -448,18 +475,23 @@ int main(int argc, char*argv[]) {
 			case '1':
 				create_xml();
 				ficheiro_method();
+			    XMLPlatformUtils::Initialize();
+				ValidateSchema2(PATH,"generated_XML.xml");
+				XMLPlatformUtils::Terminate();
 				break;
 			case '2':
 				create_JSON();
 				reading_XML();
+				cout << "JSON export complete" << endl;
 				break;
 			case '3':
+				cout << "Exit Sucessfull" << endl;
 			break;
 			default:	
 			break;
 		};
 
-		} while (option != '1' && option != '2' && option != '3');
+		} while (option != '3');
 
 	
 	return (0);
