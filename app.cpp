@@ -15,17 +15,15 @@
 #include <xercesc/sax/SAXParseException.hpp>
 #include <xercesc/validators/common/Grammar.hpp>
  
- char* PATH;
-
 using namespace std;
-
+XERCES_CPP_NAMESPACE_USE
 
 void found_Complex(string name_Complex, bool begin);
 
+char* PATH;
 int Num_Tabs = 0;
 int Num_Tabs_JSON = 0;
- 
-XERCES_CPP_NAMESPACE_USE
+
  
 
 void ValidateSchema2(const char* schemaFilePath, const char* xmlFilePath)
@@ -38,7 +36,6 @@ void ValidateSchema2(const char* schemaFilePath, const char* xmlFilePath)
         return;
     }
  
-
     domParser.setValidationScheme(XercesDOMParser::Val_Auto);
     domParser.setDoNamespaces(true);
     domParser.setDoSchema(true);
@@ -51,8 +48,10 @@ void ValidateSchema2(const char* schemaFilePath, const char* xmlFilePath)
 }
  
 
-void removeCharsFromString(string str, const char* charsToRemove) {
-	for (unsigned int i = 0; i < strlen(charsToRemove); ++i) {
+void removeCharsFromString(string str, const char* charsToRemove) 
+{
+	for (unsigned int i = 0; i < strlen(charsToRemove); ++i) 
+	{
 		str.erase(remove(str.begin(), str.end(), charsToRemove[i]), str.end());
 	}
 }
@@ -74,8 +73,8 @@ string random_string(size_t length)
 	return str;
 }
 
-void writing_map(string variable_name, string variable_type) {
-
+void writing_map(string variable_name, string variable_type) 
+{
 	fstream outfile;
 	outfile.open("generated_XML.xml", fstream::app);
 	char a = 34; // make the "
@@ -101,10 +100,8 @@ void writing_map(string variable_name, string variable_type) {
 	outfile.close();
 }
 
-void make_Complex_Xml(bool start, string name, string name_type, string scheme) {
-
-
-
+void make_Complex_Xml(bool start, string name, string name_type, string scheme) 
+{
 	fstream outfile;
 	outfile.open("generated_XML.xml", fstream::app);
 
@@ -129,11 +126,8 @@ string getting_scheme(string scheme)
 {
 	fstream f1("template.xsd");
 	size_t begin_of_sequece, end_of_sequece, found, found2=0, found3, aux2;
-
 	f1.seekp(ios_base::beg);
-
 	vector<string> words;
-
 	string search(" ");
 	string aux("<xsd:schema");
 	string schema;
@@ -147,7 +141,6 @@ string getting_scheme(string scheme)
 			if (found != string::npos) // scheme
 			{
 				do{
-					
 					aux2 = found2;
 					found2 = s.find(search,found2+1);
 					words.push_back(s.substr(aux2, found2 - aux2));
@@ -171,7 +164,6 @@ void getting_sequece(string variable_name_complex, string name_type) {
 	string aux2("<xsd:sequence>");
 	string aux3("</xsd:sequence>");
 	string aux4("type=");
-
 	fstream f1(PATH);
 	size_t begin_of_sequece, end_of_sequece, found, found2, found3;
 
@@ -247,9 +239,11 @@ void found_Complex(string name_Complex, bool begin)
 					if (found2 != string::npos)
 					{
 						found3 = s.find(">");
-						if (found3 != string::npos) {
+						if (found3 != string::npos) 
+						{
 							string c_name = s.substr(found2 + 10, found3 - found2 - 12);
-							if (c_name == name_Complex) {
+							if (c_name == name_Complex) 
+							{
 								found4 = s.find(name_Complex);
 								string Aux_Stuff = s.substr(found2 + 6, found4 - found2 - 7);
 								if (Aux_Stuff != "")
@@ -259,8 +253,6 @@ void found_Complex(string name_Complex, bool begin)
 									getting_sequece(variable_name_complex, Aux_Stuff);
 							}
 						}
-
-
 					}
 				}
 			}
@@ -280,9 +272,8 @@ void create_xml()
 }
 
 
-void ficheiro_method() {
-
-
+void ficheiro_method() 
+{
 	string s, name_complex;
 	string aux("<xsd:element");
 	string aux2("name=");
@@ -297,8 +288,6 @@ void ficheiro_method() {
 	{
 		s = "";
 		getline(f1, s);
-
-
 		//Parser
 		while (!f1.eof() || s.length() != 0)
 		{
@@ -328,23 +317,18 @@ void ficheiro_method() {
 		}
 		f1.close();
 	}
-	else {
+	else 
+	{
 		cout << "Error opening File" << endl;
 	}
 }
-
-
 /////////// XML to JSON
-
 void create_JSON()
 {
-
 	ofstream outJSON("Exported_JSON.JSON");
 	outJSON << "{";
 	Num_Tabs_JSON++;
 	outJSON.close();
-
-
 }
 
 void end_JSON()
@@ -353,15 +337,16 @@ void end_JSON()
 	outJSON.open("Exported_JSON.JSON", fstream::app);
 	outJSON << "\n" << "}";
 	outJSON.close();
-
-
 }
 
-void writing_JSON(string name, string value, bool isValid, bool exception) {
+void writing_JSON(string name, string value, bool isValid, bool exception) 
+{
 	fstream outJSON;
 	outJSON.open("Exported_JSON.JSON", fstream::app);
 	char a = 34;
-	if (isValid) {
+	
+	if (isValid) 
+	{
 		outJSON << "," << "\n";
 		for (int j = 0; j < Num_Tabs_JSON; j++)
 			outJSON << "	";
@@ -385,14 +370,12 @@ void writing_JSON(string name, string value, bool isValid, bool exception) {
 
 	}
 	outJSON.close();
-
 }
 
 
-void reading_XML() {
-
+void reading_XML() 
+{
 	ifstream f1("generated_XML.xml");
-
 	string s, value_string;
 	string search_beginning("<");
 	string search_end(">");
@@ -448,16 +431,14 @@ void reading_XML() {
 	}
 }
 
-int main(int argc, char*argv[]) {
-
+int main(int argc, char*argv[]) 
+{
 	bool in = true;
  	char option = 0;
  
 	if (argc > 1)
-
-	PATH = argv[1];
+		PATH = argv[1];
 	
-
 	removeCharsFromString(PATH, "\"");
 	do {
 		cout << "Menu" << endl;
@@ -491,8 +472,6 @@ int main(int argc, char*argv[]) {
 			break;
 		};
 
-		} while (option != '3');
-
-	
+		} while (option != '3');	
 	return (0);
 }
