@@ -25,7 +25,7 @@ int Num_Tabs = 0;
 int Num_Tabs_JSON = 0;
 
  
-
+// Function to validate xml
 void ValidateSchema2(const char* schemaFilePath, const char* xmlFilePath)
 {
     XercesDOMParser domParser;
@@ -47,7 +47,7 @@ void ValidateSchema2(const char* schemaFilePath, const char* xmlFilePath)
         cout <<"XML file doesn't conform to the schema\n";
 }
  
-
+// Aux Function to receive the path of the xsd correctly
 void removeCharsFromString(string str, const char* charsToRemove) 
 {
 	for (unsigned int i = 0; i < strlen(charsToRemove); ++i) 
@@ -56,7 +56,7 @@ void removeCharsFromString(string str, const char* charsToRemove)
 	}
 }
 
-/////////////// XSD to XML
+/////////////// XSD to XML -> Create class to create XML
 string random_string(size_t length)
 {
 	auto randchar = []() -> char
@@ -272,7 +272,6 @@ void create_xml()
 	outfile.close();
 }
 
-
 void file_method() 
 {
 	string s, name_complex;
@@ -323,7 +322,7 @@ void file_method()
 		cout << "Error opening File" << endl;
 	}
 }
-/////////// XML to JSON
+/////////// XML to JSON -> Create class to convert XML in JSON
 void create_JSON()
 {
 	ofstream outJSON("Exported_JSON.JSON");
@@ -432,6 +431,7 @@ void reading_XML()
 	}
 }
 
+////// Menu and main calling functions
 int main(int argc, char*argv[]) 
 {
 	bool in = true;
