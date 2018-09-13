@@ -262,6 +262,7 @@ void found_Complex(string name_Complex, bool begin)
 
 
 }
+
 void create_xml()
 {
 	ofstream outfile("generated_XML.xml");
@@ -272,7 +273,7 @@ void create_xml()
 }
 
 
-void ficheiro_method() 
+void file_method() 
 {
 	string s, name_complex;
 	string aux("<xsd:element");
@@ -455,7 +456,7 @@ int main(int argc, char*argv[])
 		{
 			case '1':
 				create_xml();
-				ficheiro_method();
+				file_method();
 				XMLPlatformUtils::Initialize();
 				ValidateSchema2(PATH,"generated_XML.xml");
 				XMLPlatformUtils::Terminate();
